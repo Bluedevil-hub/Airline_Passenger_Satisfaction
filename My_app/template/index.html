@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airline Passenger Satisfaction Prediction</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.10.2/css/all.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+    />
+    <style>
+      .rating {
+        position: relative;
+        height: 50px;
+        line-height: 50px;
+        font-size: 20px;
+      }
+
+      .rating label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .rating label:last-child {
+        position: static;
+      }
+
+      .rating label:nth-child(1) {
+        z-index: 5;
+      }
+
+      .rating label:nth-child(2) {
+        z-index: 4;
+      }
+
+      .rating label:nth-child(3) {
+        z-index: 3;
+      }
+
+      .rating label:nth-child(4) {
+        z-index: 2;
+      }
+
+      .rating label:nth-child(5) {
+        z-index: 1;
+      }
+
+      .rating label input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+      }
+
+      .rating label .icon {
+        float: left;
+        color: transparent;
+      }
+
+      .rating label:last-child .icon {
+        color: #857f7f;
+      }
+
+      .rating:not(:hover) label input:checked ~ .icon,
+      .rating:hover label:hover input ~ .icon {
+        color: #ffa904;
+      }
+
+      .rating label input:focus:not(:checked) ~ .icon:last-child {
+        color: #857f7f;
+        text-shadow: 0 0 5px #ffa904;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/predict" method="post">
+      <div class="p-3 mb-2 bg-success-subtle text-emphasis-success">
+        <div class="container-md d-flex mt-4 justify-content-center">
+          <div class="row align-items-center">
+            <h2>Airline Passenger Satisfaction/Not Satisfaction Prediction</h2>
+          </div>
+        </div>
+
+        <!--First Row Start-->
+        <div class="container-md mt-4">
+          <div class="row">
+            <div class="col-6 d-flex justify-content-center">
+              <label class="form-label">Select Gender</label>
+              <div class="form-check mx-2">
+                <label
+                  ><input
+                    type="radio"
+                    name="gender"
+                    id="gender"
+                    class="form-check-input"
+                    value="Male"
+                  />
+                  Male</label
+                >
+              </div>
+              <div class="form-check mx-2">
+                <label
+                  ><input
+                    type="radio"
+                    name="gender"
+                    id="gender"
+                    class="form-check-input"
+                    value="Female"
+                  />
+                  Female</label
+                >
+              </div>
+            </div>
+            <div class="col-6 d-flex justify-content-center">
+              <label class="form-label">Select Customer Type</label>
+              <div class="form-check mx-4">
+                <label
+                  ><input
+                    type="radio"
+                    name="ctype"
+                    id="ctype"
+                    value="Loyal Customer"
+                    class="form-check-input"
+                  />
+                  Loyal Customer</label
+                >
+              </div>
+              <div class="form-check">
+                <label
+                  ><input
+                    type="radio"
+                    name="ctype"
+                    id="ctype"
+                    value="disloyal Customer"
+                    class="form-check-input"
+                  />
+                  Disloyal Customer</label
+                >
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!--First Row End-->
+
+        <!--Second Row Start-->
+        <div class="container-md mt-5">
+          <div class="row">
+            <div class="col-6 d-flex justify-content-center">
+              <label class="form-label">Select Type of Travel</label>
+              <div class="form-check mx-4">
+                <label
+                  ><input
+                    type="radio"
+                    name="ttype"
+                    id="ttype"
+                    value="Personal Travel"
+                    class="form-check-input"
+                  />
+                  Personal Travel</label
+                >
+              </div>
+              <div class="form-check">
+                <label
+                  ><input
+                    type="radio"
+                    name="ttype"
+                    id="ttype"
+                    value="Business travel"
+                    class="form-check-input"
+                  />
+                  Business Travel</label
+                >
+              </div>
+            </div>
+            <div class="col-5 d-flex justify-content-center">
+              <label class="form-label">Select Class</label>
+              <div class="form-check mx-4">
+                <label
+                  ><input
+                    type="radio"
+                    name="tclass"
+                    id="tclass"
+                    value="Business"
+                    class="form-check-input"
+                  />
+                  Business
+                </label>
+              </div>
+              <div class="form-check">
+                <label
+                  ><input
+                    type="radio"
+                    name="tclass"
+                    id="tclass"
+                    value="Eco Plus"
+                    class="form-check-input"
+                  />
+                  Eco Plus
+                </label>
+              </div>
+              <div class="form-check mx-4">
+                <label
+                  ><input
+                    type="radio"
+                    name="tclass"
+                    id="tclass"
+                    value="Eco"
+                    class="form-check-input"
+                  />
+                  Eco
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Second Row End-->
+
+        <!--Third Row start-->
+        <div class="container-md mt-5">
+          <div class="row">
+            <div class="col-6 d-flex justify-content-center">
+              <label for="tdistance">Enter your Travel Distance</label>
+              <input
+                type="number"
+                id="tdistance"
+                name="tdistance"
+                class="form-control-sm mx-3"
+              />
+            </div>
+
+            <div class="col-6 d-flex justify-content-center">
+              <label for="age">Enter your Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                class="form-control-sm mx-3"
+              />
+            </div>
+          </div>
+        </div>
+        <!--Third Row End-->
+
+        <!--Fourth Row Start-->
+        <div class="container-md mt-5">
+          <div class="row">
+            <div class="col-4 d-flex justify-content-center">
+              <label for="inwififlight">Rate Inflight Wifi Service</label>
+              <div class="rating mx-3">
+                <label>
+                  <input type="radio" name="inwififlight" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inwififlight" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inwififlight" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inwififlight" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inwififlight" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="datime">Rate Departure/Arival Time Convenient</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="datime" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="datime" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="datime" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="datime" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="datime" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="eob">Rate Ease of Online Booking</label>
+                <div class="rating mx-2">
+                  <label>
+                    <input type="radio" name="eob" value="1" />
+                    <span class="fa fa-star icon"></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="eob" value="2" />
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="eob" value="3" />
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="eob" value="4" />
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                  </label>
+                  <label>
+                    <input type="radio" name="eob" value="5" />
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                    <span class="fa fa-star icon"></span>
+                </div>
+              </label> 
+            </div>
+          </div>
+        </div>
+        <!--Fourth Row End-->
+
+         
+        <!--Fifth Row Start-->
+        <div class="container-md mt-3">
+          <div class="row">
+
+            <div class="col-4 d-flex justify-content-center"> 
+              <label for="gloc">Rate Gate Location</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="gloc" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="gloc" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="gloc" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="gloc" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="gloc" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="fooddrink">Rate Food and Drinks</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="fooddrink" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="fooddrink" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="fooddrink" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="fooddrink" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="fooddrink" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            
+            <div class="col-4 d-flex justify-content-center">
+              <label for="onboard">Rate Online Boarding</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="onboard" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="onboard" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="onboard" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="onboard" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="onboard" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>  
+          </div>
+        </div>
+        <!--Fifth Row End-->
+
+         <!--Sixth Row Start-->
+        <div class="container-md mt-3">
+          <div class="row">
+            <div class="col-4 d-flex justify-content-center"> 
+              <label for="scomfort">Rate Seat Comfort</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="scomfort" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="scomfort" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="scomfort" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="scomfort" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="scomfort" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="inenter">Rate Inflight Entertainment</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="inenter" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inenter" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inenter" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inenter" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="inenter" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="obs">Rate On Boarding Services</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="obs" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="obs" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="obs" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="obs" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="obs" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+         <!--Sixth Row End-->
+          
+
+      
+
+        <!--Seventh Row Start-->
+        <div class="container-md mt-3">
+          <div class="row">
+            <div class="col-4 d-flex justify-content-center">
+              <label for="lgserv">Rate Leg Room Service</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="lgserv" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="lgserv" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="lgserv" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="lgserv" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="lgserv" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="baghan">Rate Baggage Handling</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="baghan" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="baghan" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="baghan" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="baghan" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="baghan" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="cserv">Rate Checkin Service</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="cserv" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="cserv" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="cserv" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="cserv" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="cserv" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          
+        <!--Seventh Row End-->
+        
+
+        
+        <!--Eight Row Start-->
+        <div class="container-md mt-3">
+          <div class="row">
+            <div class="col-4 d-flex justify-content-center">
+              <label for="infiserv">Rate Inflight Service</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="infiserv" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="infiserv" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="infiserv" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="infiserv" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="infiserv" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center">
+              <label for="clean">Rate Cleanliness</label>
+              <div class="rating mx-2">
+                <label>
+                  <input type="radio" name="clean" value="1" />
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="clean" value="2" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="clean" value="3" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="clean" value="4" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+                <label>
+                  <input type="radio" name="clean" value="5" />
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                  <span class="fa fa-star icon"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Eight Row End-->
+
+
+        <!--Nine Row Start-->       
+        <div class="container-md mt-3">
+          <div class="row">
+            <div class="col-6 d-flex justify-content-center">
+              <label for="ddinmin">Enter Departure Delay In Minutes</label>
+              <input type="number" id="ddinmin" name="ddinmin" class="form-control-sm mx-2" />
+            </div>
+
+            <div class="col-6 d-flex ">
+              <label for="adinmin">Enter Arrival Delay In Minutes</label>
+              <input type="number" id="adinmin" name="adinmin" class="form-control-sm mx-2"/>
+            </div>
+          </div>
+        </div>
+         <!--Nine Row End-->
+
+         <div class="container-md mt-5">
+          <div class="row">
+            <input type="submit" value="Predict" class="btn btn-success btn-lg"/>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </body>
+</html>
